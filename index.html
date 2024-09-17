@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leo</title>
+    <style>
+        #chat-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .user-message {
+            background-color: #e0f7fa;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #f1f8e9;
+        }
+
+        /* New styles for improved appearance */
+        body {
+            font-family: sans-serif; /* Choose a clean font */
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FF7F50; /* Darker text for the heading */
+        }
+
+        label {
+            display: inline-block; /* or inline-flex */ 
+            vertical-align: middle; /* Align label vertically with the select */
+            margin-right: 10px; /* Add some space between label and select */
+        }
+
+        #chatbot-select {
+            display: inline-block; /* or inline-flex */
+            vertical-align: middle;
+            width: 20%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box; /* Include padding and border in the total width */
+            margin-bottom: 10px;
+        }
+
+        #user-input {
+            width: calc(100% - 80px); /* Adjust width to accommodate the button */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Leo</h1>
+
+    <label for="chatbot-select">Select AI</label>
+    <select id="chatbot-select">
+        <option value="chatbot1">GPT-4o</option>
+        <option value="chatbot2">GPT-4</option>
+        <option value="chatbot3">Gemini</option>
+        </select>
+
+    <div id="chat-container"></div>
+
+    <input type="text" id="user-input" placeholder="Type your question...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const chatbotSelect = document.getElementById('chatbot-select');
+
+        function sendMessage() {
+            const userMessage = userInput.value;
+            displayMessage(userMessage, 'user');
+            userInput.value = '';
+
+            const selectedChatbot = chatbotSelect.value;
+            callChatbotAPI(selectedChatbot, userMessage)
+                .then(response => {
+                    displayMessage(response, 'bot');
+                })
+                .catch(error => {
+                    console.error('Error calling chatbot API:', error);
+                    displayMessage('An error occurred. Please try again later.', 'bot');
+                });
+        }
+
+        function displayMessage(message, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${sender}-message`);
+            messageElement.textContent = message;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+        }
+
+        function callChatbotAPI(chatbot, message) {
+            // Replace with your actual API calls
+            if (chatbot === 'chatbot1') {
+                return fetch('/api/chatbot1', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                })
+                .then(response => response.json())
+                .then(data => data.response); 
+            } else if (chatbot === 'chatbot2') {
+                // Similar API call for chatbot2
+                // ...
+            }
+        }
+    </script>
+</body>
+</html>
